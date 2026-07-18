@@ -3,6 +3,7 @@ from modules.profile.storage import save_student
 from utils.validation import ( validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )
 from modules.profile.storage import get_student
 from modules.profile.storage import update_student_record
+from modules.profile.storage import delete_student_record
 
 def register_student():
     "Register a new student"
@@ -107,3 +108,37 @@ def update_student():
     update_student_record(student)
 
     print("\nStudent updated successfully!")
+
+def delete_student():
+    
+    print("\n===== Delete Student Profile =====")
+
+    student_id = input("Enter Student ID: ").strip()
+
+    student = get_student(student_id)
+
+    if not student:
+        print("\nStudent not found.")
+        return
+
+    print("\nStudent Found")
+    print(f"Student ID : {student['student_id']}")
+    print(f"Full Name  : {student['full_name']}")
+    print(f"University : {student['university']}")
+    print(f"Department : {student['department']}")
+    print(f"Semester   : {student['semester']}")
+    print(f"Email      : {student['email']}")
+
+    confirm = input("\nAre you sure you want to delete this student? (Y/N): ").strip().upper()
+
+    if confirm == "Y":
+        if delete_student_record(student_id):
+            print("\nStudent deleted successfully!")
+        else:
+            print("\nFailed to delete student.")
+
+    elif confirm == "N":
+        print("\nDeletion cancelled.")
+
+    else:
+        print("\nInvalid choice. Deletion cancelled.")

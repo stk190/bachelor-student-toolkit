@@ -43,3 +43,24 @@ def update_student_record(updated_student):
 
         writer.writeheader()
         writer.writerows(students)
+
+def delete_student_record(student_id):
+    students = []
+    deleted = False
+
+    with open(DATA_FILE, "r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            if row["student_id"] == student_id:
+                deleted = True
+                continue
+            students.append(row)    
+            
+    if deleted:
+        with open(DATA_FILE, "w", newline="", encoding="utf-8") as file:
+            fieldnames = ["student_id", "full_name", "university", "department", "semester", "email"]
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(students)
+            return deleted
