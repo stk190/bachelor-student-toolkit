@@ -1,6 +1,6 @@
 from modules.profile.student import Student
 from modules.profile.storage import save_student
-from utils.validation import ( validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )
+from utils.validation import ( validate_course_count, validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )
 from modules.profile.storage import get_student
 from modules.profile.storage import update_student_record
 from modules.profile.storage import delete_student_record
@@ -166,3 +166,30 @@ def view_all_students(passkey):
             print(f"Semester   : {student['semester']}")
             print(f"Email      : {student['email']}")
             
+def add_semester_courses():
+    print("\n===== Add Semester Courses =====")
+
+    student_id = input("Enter Student ID: ").strip()
+
+    student = get_student(student_id)
+
+    if student is None:
+        print("\nStudent not found.")
+        return
+
+    print(f"\nStudent: {student['full_name']}")
+
+
+    semester = input("Enter Semester (1-16): ").strip()
+
+    while not validate_semester(semester):
+        print("Invalid semester.")
+        semester = input("Enter Semester (1-16): ").strip()
+
+    course_count = input("Number of Courses: ").strip()
+
+    while not validate_course_count(course_count):
+        print("Invalid number of courses.")
+        course_count = input("Number of Courses: ").strip()
+
+    course_count = int(course_count)
