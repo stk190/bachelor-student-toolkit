@@ -64,3 +64,14 @@ def delete_student_record(student_id):
             writer.writeheader()
             writer.writerows(students)
             return deleted
+        
+def get_all_students():
+    students = []
+
+    with open(DATA_FILE, "r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            students.append(row)
+
+    return students

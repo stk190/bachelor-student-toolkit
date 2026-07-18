@@ -3,10 +3,10 @@ from modules.profile.profile import profile_menu
 def main():
     while True:
         
-        print ("Bacchelor Student Toolkit")
+        print ("Bachelor Student Toolkit")
         print ("1. Profile")
         print ("2. Class  & Exam Schedule")
-        print ("3. Expemnse Tracker")
+        print ("3. Expense Tracker")
         print ("4. Study Planner")
         print ("5. Exit")
 

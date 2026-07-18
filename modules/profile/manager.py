@@ -4,6 +4,8 @@ from utils.validation import ( validate_name, validate_student_id, validate_univ
 from modules.profile.storage import get_student
 from modules.profile.storage import update_student_record
 from modules.profile.storage import delete_student_record
+from utils.config import ADMIN_PASSKEY
+from modules.profile.storage import get_all_students
 
 def register_student():
     "Register a new student"
@@ -142,3 +144,25 @@ def delete_student():
 
     else:
         print("\nInvalid choice. Deletion cancelled.")
+
+def view_all_students(passkey):
+    if passkey != ADMIN_PASSKEY:
+        print("\nAccess Denied. Invalid passkey.")
+        return
+
+    print("\n===== All Students =====")
+
+    students = get_all_students()
+
+    if not students:
+        print("\nNo students found.")
+        return
+
+    for student in students:
+            print(f"\nStudent ID : {student['student_id']}")
+            print(f"Full Name  : {student['full_name']}")
+            print(f"University : {student['university']}")
+            print(f"Department : {student['department']}")
+            print(f"Semester   : {student['semester']}")
+            print(f"Email      : {student['email']}")
+            
