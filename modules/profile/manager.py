@@ -2,6 +2,7 @@ from modules.profile.student import Student
 from modules.profile.storage import save_student
 from utils.validation import ( validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )
 from modules.profile.storage import get_student
+from modules.profile.storage import update_student_record
 
 def register_student():
     "Register a new student"
@@ -61,3 +62,48 @@ def view_student():
         print(f"Email      : {student['email']}")
     else:
         print("\nStudent not found.")
+
+def update_student():
+    print("\n===== Update Student Profile =====")
+
+    student_id = input("Enter Student ID: ").strip()
+
+    student = get_student(student_id)
+
+    if not student:
+        print("\nStudent not found.")
+        return
+
+    print("\nCurrent Information")
+    print(f"Name       : {student['full_name']}")
+    print(f"University : {student['university']}")
+    print(f"Department : {student['department']}")
+    print(f"Semester   : {student['semester']}")
+    print(f"Email      : {student['email']}")
+
+    print("\nLeave a field empty to keep the current value.\n")
+
+    full_name = input("New Full Name: ").strip()
+    university = input("New University: ").strip()
+    department = input("New Department: ").strip()
+    semester = input("New Semester: ").strip()
+    email = input("New Email: ").strip()
+
+    if full_name:
+        student["full_name"] = full_name
+
+    if university:
+        student["university"] = university
+
+    if department:
+        student["department"] = department
+
+    if semester:
+        student["semester"] = semester
+
+    if email:
+        student["email"] = email
+
+    update_student_record(student)
+
+    print("\nStudent updated successfully!")

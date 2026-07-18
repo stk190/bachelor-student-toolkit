@@ -23,3 +23,23 @@ def get_student(student_id):
                 return row
 
     return None
+
+def update_student_record(updated_student):
+    students = []
+
+    with open(DATA_FILE, "r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            if row["student_id"] == updated_student["student_id"]:
+                students.append(updated_student)
+            else:
+                students.append(row)
+
+    with open(DATA_FILE, "w", newline="", encoding="utf-8") as file:
+        fieldnames = [ "student_id", "full_name", "university", "department", "semester", "email"]
+
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+
+        writer.writeheader()
+        writer.writerows(students)
