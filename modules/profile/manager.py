@@ -1,6 +1,7 @@
 from modules.profile.student import Student
 from modules.profile.storage import save_student
-from utils.validation import ( validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )\
+from utils.validation import ( validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )
+from modules.profile.storage import get_student
 
 def register_student():
     "Register a new student"
@@ -42,3 +43,21 @@ def register_student():
     save_student(student)
     print("\nStudent registered successfully!")
     return student
+
+def view_student():
+    print("\n View Student Profile ")
+
+    student_id = input("Enter Student ID: ")
+
+    student = get_student(student_id)
+
+    if student:
+        print("\n Student Information")
+        print(f"Student ID : {student['student_id']}")
+        print(f"Full Name  : {student['full_name']}")
+        print(f"University : {student['university']}")
+        print(f"Department : {student['department']}")
+        print(f"Semester   : {student['semester']}")
+        print(f"Email      : {student['email']}")
+    else:
+        print("\nStudent not found.")

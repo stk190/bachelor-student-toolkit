@@ -1,5 +1,5 @@
 from modules.profile.manager import register_student
-
+from modules.profile.manager import view_student
 
 def profile_menu():
     while True:
@@ -12,7 +12,7 @@ def profile_menu():
         if choice == "1":
             register_student()
         elif choice == "2":
-            print("Feature coming soon...")
+            view_student()
         elif choice == "3":
             break
         else:
