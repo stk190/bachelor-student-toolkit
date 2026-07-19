@@ -8,6 +8,7 @@ from modules.profile.storage import update_student_record
 from modules.profile.storage import delete_student_record
 from utils.config import ADMIN_PASSKEY
 from modules.profile.storage import get_all_students
+from modules.profile.storage import get_semester_courses
 
 def register_student():
     "Register a new student"
@@ -280,3 +281,41 @@ def add_semester_courses():
             print(f"Grade Point  : {course.grade_point}")
 
     print("\nAll semester records saved successfully!")
+
+def view_semester_courses():
+    print("\n===== View Semester Courses =====")
+
+    student_id = input("Enter Student ID: ").strip()
+
+    while not validate_student_id(student_id):
+        print("Invalid Student ID. Please enter a 5-digit number.")
+        student_id = input("Enter Student ID: ").strip()
+
+    student = get_student(student_id)
+
+    if student is None:
+        print("\nStudent not found.")
+        return
+
+    print(f"\nStudent: {student['full_name']}")
+
+    semester = input("Enter Semester to view: ").strip()
+
+    while not validate_semester(semester):
+        print("Invalid Semester. Please enter a valid semester.")
+        semester = input("Enter Semester to view: ").strip()
+
+    courses = get_semester_courses(student_id, semester)
+
+    if not courses:
+        print(f"\nNo courses found for Semester {semester}.")
+        return
+
+    print(f"\n===== Courses for Semester {semester} =====")
+    for course in courses:
+        print(f"\nCourse Code  : {course['course_code']}")
+        print(f"Course Name  : {course['course_name']}")
+        print(f"Credit       : {course['credit']}")
+        print(f"Marks        : {course['marks']}")
+        print(f"Letter Grade : {course['letter_grade']}")
+        print(f"Grade Point  : {course['grade_point']}")

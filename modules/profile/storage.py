@@ -88,3 +88,16 @@ def save_course(course):
             writer.writerow(['student_id', 'semester', 'course_code', 'course_name', 'credit', 'marks', 'letter_grade', 'grade_point'])
 
         writer.writerow([course.student_id, course.semester, course.course_code, course.course_name, course.credit, course.marks, course.letter_grade, course.grade_point])
+
+def get_semester_courses(student_id, semester):
+    course_file = 'data/courses.csv'
+    courses = []
+
+    with open(course_file, "r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            if row["student_id"] == student_id and row["semester"] == str(semester):
+                courses.append(row)
+
+    return courses

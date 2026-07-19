@@ -1,6 +1,4 @@
-student_id,semester,course_code,course_name,credit,marks,letter_grade,grade_point12345,1,qwe,qwe,3,77.0,B,3.25
-12345,2,2,qwe,3,77.0,B,3.25
-12345,2,qweq,wqe,3,66.0,C,2.75
-12345,2,qewqw,qweqwe,3,88.0,A,3.75
-12345,2,wer,sdfs,4,99.0,A+,4.0
-12345,3,qew,sfd,3,77.0,B,3.25
+student_id,semester,course_code,course_name,credit,marks,letter_grade,grade_point
+12345,1,qwe,qwe,3,77.0,B,3.25
+12345,2,qwe,qwe,3,88.0,A,3.75
+12345,2,qwe,qwe,3,66.0,C,2.75

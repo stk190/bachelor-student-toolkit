@@ -4,7 +4,7 @@ from modules.profile.manager import update_student
 from modules.profile.manager import delete_student
 from utils.config import ADMIN_PASSKEY
 from modules.profile.manager import add_semester_courses
-
+from modules.profile.manager import view_semester_courses
 def profile_menu():
     while True:
 
@@ -52,6 +52,8 @@ def academic_records_menu():
 
         if choice == "1":
             add_semester_courses()
+        elif choice == "2":
+            view_semester_courses()
         elif choice == "6":
             break
 
