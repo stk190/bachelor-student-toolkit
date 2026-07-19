@@ -363,24 +363,32 @@ def calculate_overall_cgpa():
 
     student_id = input("Enter Student ID: ").strip()
 
-    semesters = set()
-    for course in courses:
-        semesters.add(course["semester"])
-    
-    semester_count = len(semesters)
-
     while not validate_student_id(student_id):
         print("Invalid Student ID. Please enter a 5-digit number.")
         student_id = input("Enter Student ID: ").strip()
 
+    student = get_student(student_id)
+
+    if student is None:
+        print("\nStudent not found.")
+        return
+
     courses = get_all_courses(student_id)
-    total_courses = len(courses)
+
     if not courses:
         print(f"\nNo courses found for Student ID {student_id}.")
-        return 
+        return
+
+    total_courses = len(courses)
+
+    semesters = set()
+    for course in courses:
+        semesters.add(course["semester"])
+
+    semester_count = len(semesters)
 
     total_credits = 0
-    total_grade_points = 0 
+    total_grade_points = 0
 
     for course in courses:
         credit = float(course["credit"])
@@ -389,11 +397,105 @@ def calculate_overall_cgpa():
         total_credits += credit
         total_grade_points += credit * grade_point
 
-    overall_cgpa = total_grade_points / total_credits if total_credits > 0 else 0
-    print(f"\n===== Overall CGPA =====")
-    print(f"\nStudent ID: {student_id}")
-    print(f"\nStudent Name: {student['full_name']}")
-    print(f"\nTotal Semesters Taken: {semester_count}")
-    print(f"\nTotal Courses: {total_courses}")
-    print(f"\nTotal Credits: {total_credits}")
-    print(f"\nOverall CGPA: {overall_cgpa:.2f}")
+    overall_cgpa = total_grade_points / total_credits
+
+    print("\n===== Overall CGPA =====")
+    print(f"Student ID                : {student_id}")
+    print(f"Student Name              : {student['full_name']}")
+    print(f"Completed Semesters       : {semester_count}")
+    print(f"Total Courses             : {total_courses}")
+    print(f"Total Credits             : {total_credits}")
+    print(f"Overall CGPA              : {overall_cgpa:.2f}")
+def view_transcript():
+    print("\n========== VIEW TRANSCRIPT ==========")
+
+    # Student ID
+    student_id = input("Enter Student ID: ").strip()
+
+    while not validate_student_id(student_id):
+        print("Invalid Student ID. Please enter a 5-digit number.")
+        student_id = input("Enter Student ID: ").strip()
+
+    # Check student
+    student = get_student(student_id)
+
+    if student is None:
+        print("\nStudent not found.")
+        return
+
+    # Get all courses
+    courses = get_all_courses(student_id)
+
+    if not courses:
+        print("\nNo academic records found.")
+        return
+
+    print("\n============= TRANSCRIPT =============")
+    print(f"Student ID   : {student['student_id']}")
+    print(f"Student Name : {student['full_name']}")
+    print(f"University   : {student['university']}")
+    print(f"Department   : {student['department']}")
+
+    current_semester = None
+
+    semester_credits = 0
+    semester_points = 0
+
+    overall_credits = 0
+    overall_points = 0
+
+    for course in courses:
+
+        # Print previous semester GPA before moving to next semester
+        if current_semester is not None and current_semester != course["semester"]:
+
+            semester_gpa = semester_points / semester_credits
+
+            print("---------------------------------------")
+            print(f"Semester GPA : {semester_gpa:.2f}")
+
+            semester_credits = 0
+            semester_points = 0
+
+        # New semester heading
+        if current_semester != course["semester"]:
+            current_semester = course["semester"]
+
+            print(f"\n========== Semester {current_semester} ==========")
+
+        # Print course
+        print(f"\nCourse Code  : {course['course_code']}")
+        print(f"Course Name  : {course['course_name']}")
+        print(f"Credit       : {course['credit']}")
+        print(f"Marks        : {course['marks']}")
+        print(f"Letter Grade : {course['letter_grade']}")
+        print(f"Grade Point  : {course['grade_point']}")
+
+        credit = float(course["credit"])
+        point = float(course["grade_point"])
+
+        semester_credits += credit
+        semester_points += credit * point
+
+        overall_credits += credit
+        overall_points += credit * point
+
+    # Last semester GPA
+    if semester_credits > 0:
+        semester_gpa = semester_points / semester_credits
+
+        print("---------------------------------------")
+        print(f"Semester GPA : {semester_gpa:.2f}")
+
+    # Overall CGPA
+    overall_cgpa = 0
+
+    if overall_credits > 0:
+        overall_cgpa = overall_points / overall_credits
+
+    print("\n=======================================")
+    print(f"Completed Semesters : {len(set(course['semester'] for course in courses))}")
+    print(f"Total Courses       : {len(courses)}")
+    print(f"Total Credits       : {overall_credits}")
+    print(f"Overall CGPA        : {overall_cgpa:.2f}")
+    print("=======================================")

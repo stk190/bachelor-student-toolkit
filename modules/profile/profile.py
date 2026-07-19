@@ -1,4 +1,4 @@
-from modules.profile.manager import calculate_semester_gpa, delete_student, register_student, view_all_students
+from modules.profile.manager import calculate_overall_cgpa, calculate_semester_gpa, delete_student, register_student, view_all_students, view_transcript
 from modules.profile.manager import view_student
 from modules.profile.manager import update_student
 from modules.profile.manager import delete_student
@@ -56,6 +56,10 @@ def academic_records_menu():
             view_semester_courses()
         elif choice == "3":
             calculate_semester_gpa()
+        elif choice == "4":
+            calculate_overall_cgpa()
+        elif choice == "5":
+            view_transcript()
         elif choice == "6":
             break
 
