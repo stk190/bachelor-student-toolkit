@@ -114,3 +114,15 @@ def get_all_courses(student_id):
                 courses.append(row)
 
     return courses
+
+def get_all_courses_records():
+    course_file = "data/courses.csv"
+    courses = []
+
+    with open(course_file, "r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            courses.append(row)
+
+    return courses

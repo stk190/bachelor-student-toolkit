@@ -499,3 +499,23 @@ def view_transcript():
     print(f"Total Credits       : {overall_credits}")
     print(f"Overall CGPA        : {overall_cgpa:.2f}")
     print("=======================================")
+
+def dasboard_statistics():
+    print("\n===== Dashboard Statistics =====")
+
+    students = get_all_students()
+
+    total_students = len(students)
+    total_courses = 0
+    total_credits = 0
+
+    for student in students:
+        courses = get_all_courses(student["student_id"])
+        total_courses += len(courses)
+
+        for course in courses:
+            total_credits += float(course["credit"])
+
+    print(f"\nTotal Students : {total_students}")
+    print(f"Total Courses  : {total_courses}")
+    print(f"Total Credits  : {total_credits}")
