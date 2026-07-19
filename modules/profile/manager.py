@@ -319,3 +319,40 @@ def view_semester_courses():
         print(f"Marks        : {course['marks']}")
         print(f"Letter Grade : {course['letter_grade']}")
         print(f"Grade Point  : {course['grade_point']}")
+
+def calculate_semester_gpa():
+    print("\n===== Calculate Semester GPA =====")
+
+    student_id = input("Enter Student ID: ").strip()
+
+    while not validate_student_id(student_id):
+        print("Invalid Student ID. Please enter a 5-digit number.")
+        student_id = input("Enter Student ID: ").strip()
+
+    selected_semester = input("Enter Semester: ").strip()
+
+    while not validate_semester(selected_semester):
+        print("Invalid Semester. Please enter a valid semester.")
+        selected_semester = input("Enter Semester: ").strip()   
+
+    courses = get_semester_courses(student_id, selected_semester)
+    if not courses:
+        print(f"\nNo courses found for Semester {selected_semester}.")
+        return 
+    total_credits = 0
+    total_grade_points = 0 
+    
+    for course in courses:
+        credit = float(course["credit"])
+        grade_point = float(course["grade_point"])
+
+        total_credits += credit
+        total_grade_points += credit * grade_point
+
+    semester_gpa = total_grade_points / total_credits if total_credits > 0 else 0
+    print(f"\n===== Semester GPA for Semester {selected_semester} =====")
+    print(f"\nStudent ID: {student_id}")
+    print(f"\nStudent Name: {get_student(student_id)['full_name']}")
+    print(f"\nSemester: {selected_semester}")
+    print(f"\nTotal Credits for Semester {selected_semester}: {total_credits}")
+    print(f"\nSemester GPA for {selected_semester}: {semester_gpa:.2f}")
