@@ -75,3 +75,16 @@ def get_all_students():
             students.append(row)
 
     return students
+
+def save_course(course):
+    course_file = 'data/courses.csv'
+    file_exists = os.path.isfile(course_file)
+    print(f"Saving course: {course.course_name}")
+
+    with open(course_file, mode='a', newline='', encoding="utf-8") as file:
+        writer = csv.writer(file)
+
+        if not file_exists or os.path.getsize(course_file) == 0:
+            writer.writerow(['student_id', 'semester', 'course_code', 'course_name', 'credit', 'marks', 'letter_grade', 'grade_point'])
+
+        writer.writerow([course.student_id, course.semester, course.course_code, course.course_name, course.credit, course.marks, course.letter_grade, course.grade_point])

@@ -1,5 +1,7 @@
+from modules.profile.course import Course
 from modules.profile.student import Student
-from modules.profile.storage import save_student
+from modules.profile.storage import save_course, save_student
+from utils.grading import get_grade_point, get_letter_grade
 from utils.validation import ( validate_course_count, validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )
 from modules.profile.storage import get_student
 from modules.profile.storage import update_student_record
@@ -169,7 +171,12 @@ def view_all_students(passkey):
 def add_semester_courses():
     print("\n===== Add Semester Courses =====")
 
+    # Student ID
     student_id = input("Enter Student ID: ").strip()
+
+    while not validate_student_id(student_id):
+        print("Invalid Student ID. Please enter a 5-digit number.")
+        student_id = input("Enter Student ID: ").strip()
 
     student = get_student(student_id)
 
@@ -179,17 +186,97 @@ def add_semester_courses():
 
     print(f"\nStudent: {student['full_name']}")
 
+    # Total completed semesters
+    completed_semesters = input("How many semesters have you completed? ").strip()
 
-    semester = input("Enter Semester (1-16): ").strip()
+    while not validate_semester(completed_semesters):
+        print("Invalid number of semesters.")
+        completed_semesters = input("How many semesters have you completed? ").strip()
 
-    while not validate_semester(semester):
-        print("Invalid semester.")
-        semester = input("Enter Semester (1-16): ").strip()
+    semester_count = int(completed_semesters)
 
-    course_count = input("Number of Courses: ").strip()
+    # Loop through each semester
+    for semester in range(1, semester_count + 1):
 
-    while not validate_course_count(course_count):
-        print("Invalid number of courses.")
+        print(f"\n========== Semester {semester} ==========")
+
+        # Number of courses
         course_count = input("Number of Courses: ").strip()
 
-    course_count = int(course_count)
+        while not validate_course_count(course_count):
+            print("Invalid number of courses.")
+            course_count = input("Number of Courses: ").strip()
+
+        course_count = int(course_count)
+
+        # Loop through each course
+        for i in range(course_count):
+
+            print(f"\n----- Course {i+1} -----")
+
+            # Course Code
+            course_code = input("Course Code: ").strip()
+
+            # Course Name
+            course_name = input("Course Name: ").strip()
+
+            while not validate_name(course_name):
+                print("Invalid Course Name.")
+                course_name = input("Course Name: ").strip()
+
+            # Credit
+            credit = input("Credit: ").strip()
+
+            while not credit.isdigit() or int(credit) not in [1, 2, 3, 4]:
+                print("Credit must be 1, 2, 3 or 4.")
+                credit = input("Credit: ").strip()
+
+            credit = int(credit)
+
+            # Marks
+            marks = input("Marks (0-100): ").strip()
+
+            while True:
+                try:
+                    marks = float(marks)
+
+                    if 0 <= marks <= 100:
+                        break
+
+                    print("Marks must be between 0 and 100.")
+
+                except ValueError:
+                    print("Please enter a valid number.")
+
+                marks = input("Marks (0-100): ").strip()
+
+            # Calculate grade
+            letter_grade = get_letter_grade(marks)
+            grade_point = get_grade_point(marks)
+
+            # Create Course object
+            course = Course(
+                student_id,
+                semester,
+                course_code,
+                course_name,
+                credit,
+                marks,
+                letter_grade,
+                grade_point
+            )
+
+            # Save course
+            save_course(course)
+
+            # Display summary
+            print("\n===== Course Summary =====")
+            print(f"Semester     : {semester}")
+            print(f"Course Code  : {course.course_code}")
+            print(f"Course Name  : {course.course_name}")
+            print(f"Credit       : {course.credit}")
+            print(f"Marks        : {course.marks}")
+            print(f"Letter Grade : {course.letter_grade}")
+            print(f"Grade Point  : {course.grade_point}")
+
+    print("\nAll semester records saved successfully!")
