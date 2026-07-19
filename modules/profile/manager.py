@@ -1,6 +1,7 @@
+from modules.profile import student
 from modules.profile.course import Course
 from modules.profile.student import Student
-from modules.profile.storage import save_course, save_student
+from modules.profile.storage import get_all_courses, save_course, save_student
 from utils.grading import get_grade_point, get_letter_grade
 from utils.validation import ( validate_course_count, validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email )
 from modules.profile.storage import get_student
@@ -356,3 +357,43 @@ def calculate_semester_gpa():
     print(f"\nSemester: {selected_semester}")
     print(f"\nTotal Credits for Semester {selected_semester}: {total_credits}")
     print(f"\nSemester GPA for {selected_semester}: {semester_gpa:.2f}")
+
+def calculate_overall_cgpa():
+    print("\n===== Calculate Overall CGPA =====")
+
+    student_id = input("Enter Student ID: ").strip()
+
+    semesters = set()
+    for course in courses:
+        semesters.add(course["semester"])
+    
+    semester_count = len(semesters)
+
+    while not validate_student_id(student_id):
+        print("Invalid Student ID. Please enter a 5-digit number.")
+        student_id = input("Enter Student ID: ").strip()
+
+    courses = get_all_courses(student_id)
+    total_courses = len(courses)
+    if not courses:
+        print(f"\nNo courses found for Student ID {student_id}.")
+        return 
+
+    total_credits = 0
+    total_grade_points = 0 
+
+    for course in courses:
+        credit = float(course["credit"])
+        grade_point = float(course["grade_point"])
+
+        total_credits += credit
+        total_grade_points += credit * grade_point
+
+    overall_cgpa = total_grade_points / total_credits if total_credits > 0 else 0
+    print(f"\n===== Overall CGPA =====")
+    print(f"\nStudent ID: {student_id}")
+    print(f"\nStudent Name: {student['full_name']}")
+    print(f"\nTotal Semesters Taken: {semester_count}")
+    print(f"\nTotal Courses: {total_courses}")
+    print(f"\nTotal Credits: {total_credits}")
+    print(f"\nOverall CGPA: {overall_cgpa:.2f}")
