@@ -1,0 +1,14 @@
+[
+    {
+        "subject": "MIS",
+        "title": "Assignment",
+        "deadline": "30-07-2026",
+        "status": "Pending"
+    },
+    {
+        "subject": "Machine Learning",
+        "title": "Pesentation",
+        "deadline": "01-08-2026",
+        "status": "Pending"
+    }
+]
