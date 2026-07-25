@@ -1,4 +1,5 @@
 from modules.profile.profile import profile_menu
+from modules.expenses.tracker import expense_tracker_menu
 from utils.input_utils import user_input
 
 def main():
@@ -19,7 +20,7 @@ def main():
         elif choice == '2':
             print("under development!!!")
         elif choice == '3':
-            print("under development!!!")
+            expense_tracker_menu()
         elif choice == '4':
             print("under development!!!")
         elif choice == '5':
