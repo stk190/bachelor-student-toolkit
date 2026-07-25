@@ -1,5 +1,6 @@
 from modules.profile.profile import profile_menu
 from modules.expenses.tracker import expense_tracker_menu
+from modules.routine.planner import run_module as routine_exam_menu
 from utils.input_utils import user_input
 
 def main():
@@ -18,7 +19,7 @@ def main():
         if choice == '1':
             profile_menu()
         elif choice == '2':
-            print("under development!!!")
+            routine_exam_menu()
         elif choice == '3':
             expense_tracker_menu()
         elif choice == '4':
