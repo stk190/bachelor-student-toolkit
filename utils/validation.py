@@ -39,6 +39,11 @@ def validate_department(department):
     return bool(re.fullmatch(r"[A-Za-z ]+", department))
 
 
+def validate_email(email):
+    """Basic email validation."""
+    return bool(re.fullmatch(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email))
+
+
 def validate_semester(semester):
     """Semester must be between 1 and 16."""
     if not semester.isdigit():
@@ -48,43 +53,34 @@ def validate_semester(semester):
     return 1 <= semester <= 16
 
 
-def validate_email(email):
-    """Basic email validation."""
-    return bool(re.fullmatch(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email))
-
-def validate_semester(semester):
-    if not semester.isdigit():
-        return False
-
-    semester = int(semester)
-    return 1 <= semester <= 16
 def validate_course_count(count):
+    """Number of courses per semester must be between 1 and 8."""
     if not count.isdigit():
         return False
 
     count = int(count)
     return 1 <= count <= 8
-import re
+
 
 def validate_course_code(code):
+    """Course code must be 2-4 letters followed by exactly 3 digits, e.g. CSE101."""
     pattern = r"^[A-Za-z]{2,4}\d{3}$"
     return bool(re.fullmatch(pattern, code))
 
+
 def validate_course_name(name):
+    """Course name must contain only letters/spaces, max 100 characters."""
+    name = name.strip()
+
     if len(name) == 0 or len(name) > 100:
         return False
 
     return all(char.isalpha() or char.isspace() for char in name)
 
+
 def validate_credit(credit):
+    """Credit must be 1, 2, 3, or 4."""
     if not credit.isdigit():
         return False
 
-    return int(credit) in [1, 2, 3]
-
-def validate_course_count(count):
-    if not count.isdigit():
-        return False
-
-    count = int(count)
-    return 1 <= count <= 8
+    return int(credit) in [1, 2, 3, 4]

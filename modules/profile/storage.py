@@ -1,128 +1,189 @@
 import csv
 import os
-DATA_FILE = 'data/students.csv'
+
+STUDENTS_FILE = 'data/students.csv'
+COURSES_FILE = 'data/courses.csv'
+
+STUDENT_FIELDS = ["student_id", "full_name", "university", "department", "email"]
+COURSE_FIELDS = ["student_id", "semester", "course_code", "course_name",
+                  "credit", "marks", "letter_grade", "grade_point"]
+
+
+def ensure_file(filepath, fieldnames):
+    """Create the folder/file with a header row if it doesn't exist yet."""
+    directory = os.path.dirname(filepath)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory)
+
+    if not os.path.exists(filepath):
+        with open(filepath, "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow(fieldnames)
+        print(f"\n'{filepath}' not found. A new file has been created.")
+
+
+# ---------------- STUDENTS ----------------
 
 def save_student(student):
-    file_exists = os.path.isfile(DATA_FILE)
+    ensure_file(STUDENTS_FILE, STUDENT_FIELDS)
     print(f"Saving student: {student.full_name}")
 
-    with open(DATA_FILE, mode='a', newline='', encoding="utf-8") as file:
-        writer = csv.writer(file)
+    try:
+        with open(STUDENTS_FILE, mode='a', newline='', encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow([student.student_id, student.full_name, student.university,
+                              student.department, student.email])
+    except Exception as e:
+        print("Error saving student:", e)
 
-        if not file_exists or os.path.getsize(DATA_FILE) == 0:
-            writer.writerow(['student_id', 'full_name', 'university', 'department', 'semester', 'email'])
-
-        writer.writerow([student.student_id, student.full_name, student.university, student.department, student.semester, student.email])   
 
 def get_student(student_id):
-    with open(DATA_FILE, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
+    ensure_file(STUDENTS_FILE, STUDENT_FIELDS)
 
-        for row in reader:
-            if row["student_id"] == student_id:
-                return row
+    try:
+        with open(STUDENTS_FILE, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row.get("student_id") == student_id:
+                    return row
+    except Exception as e:
+        print("Error reading students:", e)
 
     return None
 
+
 def update_student_record(updated_student):
+    ensure_file(STUDENTS_FILE, STUDENT_FIELDS)
     students = []
 
-    with open(DATA_FILE, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
+    try:
+        with open(STUDENTS_FILE, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row.get("student_id") == updated_student["student_id"]:
+                    students.append(updated_student)
+                else:
+                    students.append(row)
+    except Exception as e:
+        print("Error reading students:", e)
+        return False
 
-        for row in reader:
-            if row["student_id"] == updated_student["student_id"]:
-                students.append(updated_student)
-            else:
-                students.append(row)
+    try:
+        with open(STUDENTS_FILE, "w", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=STUDENT_FIELDS)
+            writer.writeheader()
+            writer.writerows(students)
+    except Exception as e:
+        print("Error saving students:", e)
+        return False
 
-    with open(DATA_FILE, "w", newline="", encoding="utf-8") as file:
-        fieldnames = [ "student_id", "full_name", "university", "department", "semester", "email"]
+    return True
 
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-
-        writer.writeheader()
-        writer.writerows(students)
 
 def delete_student_record(student_id):
+    ensure_file(STUDENTS_FILE, STUDENT_FIELDS)
     students = []
     deleted = False
 
-    with open(DATA_FILE, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
+    try:
+        with open(STUDENTS_FILE, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row.get("student_id") == student_id:
+                    deleted = True
+                    continue
+                students.append(row)
+    except Exception as e:
+        print("Error reading students:", e)
+        return False
 
-        for row in reader:
-            if row["student_id"] == student_id:
-                deleted = True
-                continue
-            students.append(row)    
-            
     if deleted:
-        with open(DATA_FILE, "w", newline="", encoding="utf-8") as file:
-            fieldnames = ["student_id", "full_name", "university", "department", "semester", "email"]
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(students)
-            return deleted
-        
+        try:
+            with open(STUDENTS_FILE, "w", newline="", encoding="utf-8") as file:
+                writer = csv.DictWriter(file, fieldnames=STUDENT_FIELDS)
+                writer.writeheader()
+                writer.writerows(students)
+        except Exception as e:
+            print("Error saving students:", e)
+            return False
+
+    return deleted
+
+
 def get_all_students():
+    ensure_file(STUDENTS_FILE, STUDENT_FIELDS)
     students = []
 
-    with open(DATA_FILE, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-            students.append(row)
+    try:
+        with open(STUDENTS_FILE, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                students.append(row)
+    except Exception as e:
+        print("Error reading students:", e)
+        return []
 
     return students
 
+
+# ---------------- COURSES ----------------
+
 def save_course(course):
-    course_file = 'data/courses.csv'
-    file_exists = os.path.isfile(course_file)
+    ensure_file(COURSES_FILE, COURSE_FIELDS)
     print(f"Saving course: {course.course_name}")
 
-    with open(course_file, mode='a', newline='', encoding="utf-8") as file:
-        writer = csv.writer(file)
+    try:
+        with open(COURSES_FILE, mode='a', newline='', encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow([course.student_id, course.semester, course.course_code,
+                              course.course_name, course.credit, course.marks,
+                              course.letter_grade, course.grade_point])
+    except Exception as e:
+        print("Error saving course:", e)
 
-        if not file_exists or os.path.getsize(course_file) == 0:
-            writer.writerow(['student_id', 'semester', 'course_code', 'course_name', 'credit', 'marks', 'letter_grade', 'grade_point'])
-
-        writer.writerow([course.student_id, course.semester, course.course_code, course.course_name, course.credit, course.marks, course.letter_grade, course.grade_point])
 
 def get_semester_courses(student_id, semester):
-    course_file = 'data/courses.csv'
+    ensure_file(COURSES_FILE, COURSE_FIELDS)
     courses = []
 
-    with open(course_file, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-            if row["student_id"] == student_id and row["semester"] == str(semester):
-                courses.append(row)
+    try:
+        with open(COURSES_FILE, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row.get("student_id") == student_id and row.get("semester") == str(semester):
+                    courses.append(row)
+    except Exception as e:
+        print("Error reading courses:", e)
 
     return courses
+
 
 def get_all_courses(student_id):
-    course_file = 'data/courses.csv'
+    ensure_file(COURSES_FILE, COURSE_FIELDS)
     courses = []
 
-    with open(course_file, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-            if row["student_id"] == student_id:
-                courses.append(row)
+    try:
+        with open(COURSES_FILE, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row.get("student_id") == student_id:
+                    courses.append(row)
+    except Exception as e:
+        print("Error reading courses:", e)
 
     return courses
 
+
 def get_all_courses_records():
-    course_file = "data/courses.csv"
+    ensure_file(COURSES_FILE, COURSE_FIELDS)
     courses = []
 
-    with open(course_file, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-            courses.append(row)
+    try:
+        with open(COURSES_FILE, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                courses.append(row)
+    except Exception as e:
+        print("Error reading courses:", e)
 
     return courses
