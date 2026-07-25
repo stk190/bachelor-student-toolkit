@@ -7,10 +7,9 @@ from modules.profile.storage import get_all_students, get_semester_courses, get_
 
 
 from utils.grading import get_grade_point, get_letter_grade
-from utils.validation import validate_course_count, validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email
 from utils.config import ADMIN_PASSKEY
 from utils.input_utils import user_input
-
+from utils.validation import validate_course_count, validate_name, validate_student_id, validate_university, validate_department, validate_semester, validate_email, validate_course_code, validate_credit
 
 def register_student():
     print("\n==== Register a new student ====\n")
@@ -209,17 +208,43 @@ def add_semester_courses():
 
     print(f"\nStudent: {student['full_name']}")
 
-    # Total completed semesters
-    completed_semesters = user_input("How many semesters have you completed? ").strip()
+    # ---- Check for previously stored semester/course data ----
+    existing_courses = get_all_courses(student_id)
 
-    while not validate_semester(completed_semesters):
-        print("Invalid number of semesters.")
-        completed_semesters = user_input("How many semesters have you completed? ").strip()
+    if existing_courses:
+        existing_semesters = sorted(set(int(course["semester"]) for course in existing_courses))
+        last_semester = max(existing_semesters)
 
-    semester_count = int(completed_semesters)
+        print("\n===== Previous Records Found =====")
+        print(f"Semesters already recorded : {', '.join(str(s) for s in existing_semesters)}")
+        print(f"Total courses recorded     : {len(existing_courses)}")
 
-    # Loop through each semester
-    for semester in range(1, semester_count + 1):
+        for sem in existing_semesters:
+            sem_courses = [c for c in existing_courses if int(c["semester"]) == sem]
+            print(f"\n-- Semester {sem} ({len(sem_courses)} course(s)) --")
+            for c in sem_courses:
+                print(f"  {c['course_code']} - {c['course_name']} "
+                      f"(Credit: {c['credit']}, Grade: {c['letter_grade']})")
+        print("===================================")
+
+        print(f"\nNew semesters will continue from Semester {last_semester + 1}.")
+        start_semester = last_semester + 1
+    else:
+        print("\nNo previous records found. Starting from Semester 1.")
+        start_semester = 1
+
+    # Number of NEW semesters to add
+    new_semester_input = user_input("How many new semesters do you want to add? ").strip()
+
+    while (not validate_semester(new_semester_input)
+           or start_semester + int(new_semester_input) - 1 > 16):
+        print("Invalid number of semesters, or it would exceed the 16-semester limit.")
+        new_semester_input = user_input("How many new semesters do you want to add? ").strip()
+
+    new_semester_count = int(new_semester_input)
+
+    # Loop through each NEW semester, continuing the chain
+    for semester in range(start_semester, start_semester + new_semester_count):
 
         print(f"\n========== Semester {semester} ==========")
 
@@ -232,13 +257,25 @@ def add_semester_courses():
 
         course_count = int(course_count)
 
+        # Track course codes entered in this semester to prevent duplicates within it
+        used_course_codes = set()
+
         # Loop through each course
         for i in range(course_count):
 
             print(f"\n----- Course {i+1} -----")
 
             # Course Code
-            course_code = user_input("Course Code: ").strip()
+            course_code = user_input("Course Code (e.g. CSE101): ").strip().upper()
+
+            while not validate_course_code(course_code) or course_code in used_course_codes:
+                if course_code in used_course_codes:
+                    print("You already entered this course code for this semester.")
+                else:
+                    print("Invalid Course Code. Format must be 2-4 letters followed by 3 digits (e.g. CSE101).")
+                course_code = user_input("Course Code (e.g. CSE101): ").strip().upper()
+
+            used_course_codes.add(course_code)
 
             # Course Name
             course_name = user_input("Course Name: ").strip()
@@ -250,7 +287,7 @@ def add_semester_courses():
             # Credit
             credit = user_input("Credit: ").strip()
 
-            while not credit.isdigit() or int(credit) not in [1, 2, 3, 4]:
+            while not validate_credit(credit):
                 print("Credit must be 1, 2, 3 or 4.")
                 credit = user_input("Credit: ").strip()
 
@@ -302,8 +339,7 @@ def add_semester_courses():
             print(f"Letter Grade : {course.letter_grade}")
             print(f"Grade Point  : {course.grade_point}")
 
-    print("\nAll semester records saved successfully!")
-
+    print("\nAll new semester records saved successfully!")
 
 def view_semester_courses():
     print("\n===== View Semester Courses =====")

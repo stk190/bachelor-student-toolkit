@@ -21,3 +21,5 @@ student_id,semester,course_code,course_name,credit,marks,letter_grade,grade_poin
 12312,2,asd,asd,3,86.0,A,3.75
 12312,2,asdasd,asdasd,3,87.0,A,3.75
 12312,2,asdasdasd,asdasdasd,3,89.0,A,3.75
+12312,3,QWE123,qwe,3,88.0,A,3.75
+12312,3,EWQ321,ewq,3,78.0,B,3.25
