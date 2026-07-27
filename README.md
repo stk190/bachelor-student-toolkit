@@ -8,7 +8,7 @@ Bachelor Student Toolkit is a Python command-line application developed as a mid
 |---|---|
 | Student Profile & Academic Records | ✅ Completed |
 | Class Routine & Exam Schedule | 🚧 In Progress |
-| Expense Tracker | 🚧 In Progress |
+| Expense Tracker | ✅ Completed |
 | Study Planner | 🚧 In Progress |
 
 ---
