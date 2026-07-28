@@ -22,7 +22,6 @@ def ensure_file(filepath, fieldnames):
         print(f"\n'{filepath}' not found. A new file has been created.")
 
 
-# ---------------- STUDENTS ----------------
 
 def save_student(student):
     ensure_file(STUDENTS_FILE, STUDENT_FIELDS)
@@ -126,7 +125,6 @@ def get_all_students():
     return students
 
 
-# ---------------- COURSES ----------------
 
 def save_course(course):
     ensure_file(COURSES_FILE, COURSE_FIELDS)

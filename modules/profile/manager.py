@@ -14,7 +14,6 @@ from utils.validation import validate_course_count, validate_name, validate_stud
 def register_student():
     print("\n==== Register a new student ====\n")
 
-    ##ID (format check, then duplicate check — looped separately so one bad entry doesn't abort registration)
     while True:
         student_id = user_input("Enter Student ID: ").strip()
 
@@ -257,15 +256,12 @@ def add_semester_courses():
 
         course_count = int(course_count)
 
-        # Track course codes entered in this semester to prevent duplicates within it
         used_course_codes = set()
 
-        # Loop through each course
         for i in range(course_count):
 
             print(f"\n----- Course {i+1} -----")
 
-            # Course Code
             course_code = user_input("Course Code (e.g. CSE101): ").strip().upper()
 
             while not validate_course_code(course_code) or course_code in used_course_codes:
@@ -277,14 +273,12 @@ def add_semester_courses():
 
             used_course_codes.add(course_code)
 
-            # Course Name
             course_name = user_input("Course Name: ").strip()
 
             while not validate_name(course_name):
                 print("Invalid Course Name.")
                 course_name = user_input("Course Name: ").strip()
 
-            # Credit
             credit = user_input("Credit: ").strip()
 
             while not validate_credit(credit):
@@ -293,7 +287,6 @@ def add_semester_courses():
 
             credit = int(credit)
 
-            # Marks
             marks = user_input("Marks (0-100): ").strip()
 
             while True:
@@ -310,11 +303,9 @@ def add_semester_courses():
 
                 marks = user_input("Marks (0-100): ").strip()
 
-            # Calculate grade
             letter_grade = get_letter_grade(marks)
             grade_point = get_grade_point(marks)
 
-            # Create Course object
             course = Course(
                 student_id,
                 semester,
@@ -326,10 +317,8 @@ def add_semester_courses():
                 grade_point
             )
 
-            # Save course
             save_course(course)
 
-            # Display summary
             print("\n===== Course Summary =====")
             print(f"Semester     : {semester}")
             print(f"Course Code  : {course.course_code}")
